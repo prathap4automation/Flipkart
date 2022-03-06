@@ -1,4 +1,4 @@
-@regression @Login
+@Login
 Feature: Login feature 2
 
   Scenario Outline: (1)Validate Login with valid credentials
@@ -7,6 +7,7 @@ Feature: Login feature 2
     And User enters "<Password>" for password
     When User clicks on Login button
     Then User should be able to login
+    Then User logout from application
     Examples:
       | UserName   | Password      |
       | 9885675068 | Pahtarp**5068 |
