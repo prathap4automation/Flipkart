@@ -1,4 +1,4 @@
-package Login;
+package com.prathap.flipkart.loginpage;
 
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -8,7 +8,7 @@ import cucumber.api.java.en.When;
 import java.io.IOException;
 
 
-public class Login_SD extends Login{
+public class Login_SD extends Login {
 
     public Login_SD() throws IOException {
     }

@@ -1,4 +1,4 @@
-package HomePage;
+package com.prathap.flipkart.homepage;
 
 import org.junit.Assert;
 import utilities.SeleniumUtilities;

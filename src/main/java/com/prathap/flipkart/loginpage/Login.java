@@ -1,4 +1,4 @@
-package Login;
+package com.prathap.flipkart.loginpage;
 
 import org.junit.Assert;
 import org.openqa.selenium.WebElement;

@@ -7,7 +7,6 @@ Feature: Login feature
     And User enters "<Password>" for password
     When User clicks on Login button
     And User should be able to login
-#    And User captures screen
     Then User logout from application
     Examples:
       | UserName   | Password      |

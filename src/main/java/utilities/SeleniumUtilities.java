@@ -22,6 +22,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 
 public class SeleniumUtilities {
@@ -47,6 +48,18 @@ public class SeleniumUtilities {
         wait = new WebDriverWait(webDriver, 30);
     }
 
+    protected void launchByUrl(String urlName) throws IOException {
+        setUpWebDriver(PropertiesFileReader.getPropertyValue("config","browserName"));
+        if(getEnvironment().equalsIgnoreCase("local")){
+            webDriver.manage().window().maximize();
+            webDriver.get(PropertiesFileReader.getPropertyValue("config",urlName));
+        } else{
+            remoteWebDriver.manage().window().maximize();
+            remoteWebDriver.get(PropertiesFileReader.getPropertyValue("config",urlName));
+        }
+        wait = new WebDriverWait(webDriver, 30);
+    }
+
     protected String getEnvironment() throws IOException {
         return PropertiesFileReader.getPropertyValue("config","environment");
     }
@@ -57,8 +70,10 @@ public class SeleniumUtilities {
             switch (browserName){
                 case "chrome":
                     System.out.println("Opening Chrome browser.");
+                    ChromeOptions options = new ChromeOptions();
+                    options.addArguments(Arrays.asList("--no-sandbox","--ignore-certificate-errors","--homepage=about:blank","--no-first-run","--disable-infobars","--disable-notifications"));
                     WebDriverManager.chromedriver().setup();
-                    webDriver = new ChromeDriver();
+                    webDriver = new ChromeDriver(options);
                     break;
                 case "firefox":
                     System.out.println("Opening Firefox browser.");
@@ -90,8 +105,8 @@ public class SeleniumUtilities {
                     System.out.println("Opening Remote Chrome browser.");
                     url = new URL("http://localhost:5900/wd/hub");
                     ChromeOptions options = new ChromeOptions();
+                    options.addArguments(Arrays.asList("--no-sandbox","--ignore-certificate-errors","--homepage=about:blank","--no-first-run","--disable-infobars","--disable-notifications","--disable-popup-blocking"));
                     options.addArguments("--test-type");
-                    options.addArguments("--disable-popup-blocking");
                     options.addArguments("--incognito");
                     dc = new DesiredCapabilities();
                     dc.setCapability(ChromeOptions.CAPABILITY,options);
@@ -131,6 +146,7 @@ public class SeleniumUtilities {
     }
 
     public void click(String elePath){
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(elePath)));
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath(elePath)));
         getWebElement(elePath).click();
 
@@ -182,6 +198,15 @@ public class SeleniumUtilities {
                 ele.click();
                 break;
             }
+        }
+    }
+
+    public void scrollToElement(WebElement element){
+        ((JavascriptExecutor)webDriver).executeScript("arguments[0].scrollIntoView(true);", element);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
