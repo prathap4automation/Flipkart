@@ -33,8 +33,6 @@ public class SeleniumUtilities {
     public URL url;
     private Actions actions;
 
-    private String lbl_userName = "//a/img[@title='Flipkart']/following::div[4]/descendant::div[4]";
-    private String userNameOptions = "//a/img[@title='Flipkart']/following::div[4]/descendant::div[4]/following::div[1]/div[2]/div/ul/li[*]/a/div";
 
     protected void launch() throws IOException {
         setUpWebDriver(PropertiesFileReader.getPropertyValue("config","browserName"));
@@ -145,11 +143,9 @@ public class SeleniumUtilities {
         getWebElement(elePath).sendKeys(eleText);
     }
 
-    public void click(String elePath){
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(elePath)));
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(elePath)));
-        getWebElement(elePath).click();
-
+    public void click(WebElement element){
+        wait.until(ExpectedConditions.elementToBeClickable(element));
+        element.click();
     }
 
     public void verifyTextIsVisible(String elePath) throws InterruptedException {
@@ -164,11 +160,6 @@ public class SeleniumUtilities {
     public void captureScreenshot(){
         try{
             File screenshotFile = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.FILE);
-//            try {
-//                FileUtils.copyFile(screenshotFile , new File(System.getProperty("user.dir")+File.separator+"Screenshots"));
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
             Files.move(screenshotFile,new File(System.getProperty("user.dir")+File.separator+"Screenshots"));
         } catch (Exception e){
             Assert.fail("Exception while capturing screen!!\n"+e.getMessage());
@@ -188,19 +179,6 @@ public class SeleniumUtilities {
         wait.until(ExpectedConditions.elementToBeClickable(getWebElement(elePath)));
     }
 
-    public void clickLogoutLink(){
-        String eleText = "";
-        moveToElement(getWebElement(lbl_userName));
-        List<WebElement> eleList = webDriver.findElements(By.xpath(userNameOptions));
-        for(WebElement ele: eleList){
-            eleText = ele.getText();
-            if(eleText.toLowerCase().contains("logout")){
-                ele.click();
-                break;
-            }
-        }
-    }
-
     public void scrollToElement(WebElement element){
         ((JavascriptExecutor)webDriver).executeScript("arguments[0].scrollIntoView(true);", element);
         try {
@@ -210,7 +188,9 @@ public class SeleniumUtilities {
         }
     }
 
-//    public void selectUserNameOption(String optionValue){
-//
-//    }
+    public void hoverOnWebElement(WebElement element){
+        actions = new Actions(webDriver);
+        actions.moveToElement(element).build().perform();
+    }
+
 }
